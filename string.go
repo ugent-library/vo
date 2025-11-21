@@ -2,6 +2,7 @@ package vo
 
 import (
 	"fmt"
+	"net/mail"
 	"regexp"
 )
 
@@ -11,12 +12,14 @@ var (
 	RuleLengthBetween = "length_between"
 	RuleMatch         = "match"
 	RuleAlphanumeric  = "alphanumeric"
+	RuleEmailAddress  = "email_address"
 
 	MessageNotBlank      = "cannot be blank"
 	MessageLength        = "length must be %d"
 	MessageLengthBetween = "length must be between %d and %d"
 	MessageMatch         = "must match %s"
 	MessageAlphanumeric  = "must only contain letters a to z and digits"
+	MessageEmailAddress  = "must be a valid email address"
 
 	reAlphanumeric = regexp.MustCompile("^[a-zA-Z0-9]+$")
 )
@@ -64,10 +67,20 @@ func Match(key, val string, r *regexp.Regexp) *Error {
 
 // Alphanumeric checks if a given string only contains letters a to z, letters A to Z or digits.
 //
-//	err := vo.Match("issn", "1940-5758", regexp.MustCompile(`^[0-9]{4}-[0-9]{3}[0-9X]$`))
+//	err := vo.Alphanumeric("username", "Admin123")
 func Alphanumeric(key, val string) *Error {
 	if !reAlphanumeric.MatchString(val) {
 		return NewError(key, RuleAlphanumeric).WithMessage(MessageAlphanumeric)
+	}
+	return nil
+}
+
+// EmailAddress checks if a given string is a valid email address.
+//
+//	err := vo.EmailAddress("email", "admin@example.com")
+func EmailAddress(key, val string) *Error {
+	if _, err := mail.ParseAddress(val); err != nil {
+		return NewError(key, RuleEmailAddress).WithMessage(MessageEmailAddress)
 	}
 	return nil
 }
