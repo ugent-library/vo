@@ -2,6 +2,7 @@ package vo
 
 import (
 	"fmt"
+	"mime"
 	"net/mail"
 	"regexp"
 )
@@ -13,6 +14,7 @@ var (
 	RuleMatch         = "match"
 	RuleAlphanumeric  = "alphanumeric"
 	RuleEmailAddress  = "email_address"
+	RuleMediaType     = "media_type"
 
 	MessageNotBlank      = "cannot be blank"
 	MessageLength        = "length must be %d"
@@ -20,6 +22,7 @@ var (
 	MessageMatch         = "must match %s"
 	MessageAlphanumeric  = "must only contain letters a to z and digits"
 	MessageEmailAddress  = "must be a valid email address"
+	MessageMediaType     = "must be a valid media type"
 
 	reAlphanumeric = regexp.MustCompile("^[a-zA-Z0-9]+$")
 )
@@ -81,6 +84,16 @@ func Alphanumeric(key, val string) *Error {
 func EmailAddress(key, val string) *Error {
 	if _, err := mail.ParseAddress(val); err != nil {
 		return NewError(key, RuleEmailAddress).WithMessage(MessageEmailAddress)
+	}
+	return nil
+}
+
+// MediaType checks if a given string is a valid RFC 1521 media type.
+//
+//	err := vo.MediaType("content_type", "application/pdf")
+func MediaType(key, val string) *Error {
+	if _, _, err := mime.ParseMediaType(val); err != nil {
+		return NewError(key, RuleMediaType).WithMessage(MessageMediaType)
 	}
 	return nil
 }
