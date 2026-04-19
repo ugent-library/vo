@@ -50,7 +50,7 @@ func SizeBetween[T any](key string, val []T, min, max int) *Error {
 
 func OneOf[TT ~[]T, T comparable](key string, val T, vals TT) *Error {
 	if !slices.Contains(vals, val) {
-		return NewError(key, RuleOneOf, vals).WithMessage(fmt.Sprintf(MessageOneOf, FormatSlice(vals)))
+		return NewError(key, RuleOneOf, vals).WithMessage(fmt.Sprintf(MessageOneOf, formatSlice(vals)))
 	}
 	return nil
 }

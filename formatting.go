@@ -2,7 +2,7 @@ package vo
 
 import "fmt"
 
-func FormatSlice[T any](vals []T) string {
+func formatSlice[T any](vals []T) string {
 	n := len(vals)
 	str := ""
 	for i, v := range vals {
