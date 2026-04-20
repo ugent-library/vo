@@ -167,6 +167,9 @@ func (b Builder) Add(errs ...*Error) Builder {
 
 func join(p1, p2 string) string {
 	if p1 != "" && p2 != "" {
+		if p2[0] == '[' {
+			return p1 + p2 // preserve bracket notation: "abstract" + "[0].text" = "abstract[0].text"
+		}
 		return p1 + "." + p2
 	}
 	if p1 != "" {
